@@ -17,7 +17,13 @@ function App() {
 
   useEffect(() => {
     // Create a WebSocket connection when the component mounts
-    const ws = new WebSocket('ws://localhost:8188/ws?clientId=1122');
+    let { hostname, port } = window.location;
+
+    // the proxy not working yet. enable when working with local dev via 'npm start'
+    // hostname = "localhost"
+    // port = "8188"
+
+    const ws = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=1122");
 
     // Define event handlers for the WebSocket connection
     ws.onopen = () => {
