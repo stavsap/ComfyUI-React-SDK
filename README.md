@@ -1,1 +1,1 @@
-# ComfyUI-React
+# ComfyUI-React-SDK
