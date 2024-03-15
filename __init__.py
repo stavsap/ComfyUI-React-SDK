@@ -18,5 +18,6 @@ def entrance(request):
 server.PromptServer.instance.routes.static(APP_ROOT_URI+"/static/css/", path=os.path.join(WEBROOT, "static/css"))
 server.PromptServer.instance.routes.static(APP_ROOT_URI+"/static/js/", path=os.path.join(WEBROOT, "static/js"))
 server.PromptServer.instance.routes.static(APP_ROOT_URI+"/static/media/", path=os.path.join(WEBROOT, "static/media"))
+server.PromptServer.instance.routes.static(APP_ROOT_URI,WEBROOT)
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']

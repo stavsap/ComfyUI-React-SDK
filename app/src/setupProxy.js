@@ -8,4 +8,18 @@ module.exports = function(app) {
             changeOrigin: true,
         })
     );
+    app.use(
+        '/prompt/',
+        createProxyMiddleware({
+            target: 'http://localhost:8188',
+            changeOrigin: true,
+        })
+    );
+    app.use(
+        '/view',
+        createProxyMiddleware({
+            target: 'http://localhost:8188',
+            changeOrigin: true,
+        })
+    );
 };
