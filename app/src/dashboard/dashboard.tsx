@@ -1,27 +1,15 @@
 import React, {useEffect, useState} from 'react';
-
 import {useComfy} from "../compfy-api/ComfyProvider";
 import logo from "../logo.svg";
 import {Box, Button, Image, Stack} from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
-
-
-const WS_MESSAGE_TYPE_EXECUTING="executing"
-const WS_MESSAGE_TYPE_EXECUTED="executed"
-const WS_MESSAGE_TYPE_STATUS="status"
-const WS_MESSAGE_TYPE_PROGRESS="progress"
-const WS_MESSAGE_TYPE_EXECUTION_START="execution_start"
-const WS_MESSAGE_TYPE_EXECUTION_CACHED="execution_cached"
-
+import {GetWebSocket, WS_MESSAGE_TYPE_EXECUTED} from "../compfy-api/api";
 
 const Dashboard = () => {
 
     const {queuePrompt, fetchCheckpoints } = useComfy();
-
-    const [socket, setSocket] = useState<WebSocket | null>(null);
     const [rand, setRand] = useState<number>(Math.random);
     const [image, setImage] = useState<string | null>(null);
-    const [messages, setMessages] = useState<any[]>([]);
 
     function updateCheckpoint(){
         fetchCheckpoints().then(checkpoints=>{
@@ -37,19 +25,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         // Create a WebSocket connection when the component mounts
-        let { hostname, port } = window.location;
-
-        if(process.env.NODE_ENV === "development"){ // temp fix until more normal way to proxy web socket.
-            hostname = "localhost"
-            port = "8188"
-        }
-
-        const ws = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=1122");
-
-        // Define event handlers for the WebSocket connection
-        ws.onopen = () => {
-            console.log('WebSocket connected');
-        };
+        const ws = GetWebSocket()
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -57,20 +33,8 @@ const Dashboard = () => {
                 setImage(message.data.output.images[0].filename)
             }
             console.log(message)
-            setMessages(prevMessages => [...prevMessages, message]);
         };
 
-        ws.onclose = () => {
-            console.log('WebSocket disconnected');
-        };
-
-        // Store the WebSocket instance in state
-        setSocket(ws);
-
-        // Close the WebSocket connection when the component unmounts
-        return () => {
-            ws.close();
-        };
     }, []);
 
     return (

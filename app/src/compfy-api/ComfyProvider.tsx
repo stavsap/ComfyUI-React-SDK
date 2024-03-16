@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {createContext, useContext, useState, ReactNode, useEffect} from 'react';
 import axios from "axios";
 import {Root, WORKFLOW} from "./api";
 
@@ -25,6 +25,37 @@ const fetchCheckpoints = async () => {
 };
 
 export const ComfyProvider: React.FC<DataProviderProps> = ({ children }) => {
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [messages, setMessages] = useState<any[]>([]);
+
+    useEffect(() => {
+        // let { hostname, port } = window.location;
+        //
+        // if(process.env.NODE_ENV === "development"){ // temp fix until more normal way to proxy web socket.
+        //     hostname = "localhost"
+        //     port = "8188"
+        // }
+        //
+        // const ws = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=1122");
+        //
+        // // Define event handlers for the WebSocket connection
+        // ws.onopen = () => {
+        //     console.log('WebSocket connected');
+        // };
+        //
+        // ws.onmessage = (event) => {
+        //     const message = JSON.parse(event.data);
+        //     console.log(message)
+        // };
+        //
+        // ws.onclose = () => {
+        //     console.log('WebSocket disconnected');
+        // };
+        //
+        // // Store the WebSocket instance in state
+        // setSocket(ws);
+    }, [])
+
     const queuePrompt = async () => {
         WORKFLOW["3"].inputs.seed =  Math.round(Math.random()*100000)
         const data = { 'prompt': WORKFLOW, 'client_id': "1122"};

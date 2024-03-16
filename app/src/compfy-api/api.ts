@@ -1,3 +1,39 @@
+
+export const WS_MESSAGE_TYPE_EXECUTING="executing"
+export const WS_MESSAGE_TYPE_EXECUTED="executed"
+export const WS_MESSAGE_TYPE_STATUS="status"
+export const WS_MESSAGE_TYPE_PROGRESS="progress"
+export const WS_MESSAGE_TYPE_EXECUTION_START="execution_start"
+export const WS_MESSAGE_TYPE_EXECUTION_CACHED="execution_cached"
+
+let webseocket: WebSocket
+
+export function GetWebSocket(){
+    if (webseocket) {
+        return webseocket
+    }
+    let { hostname, port } = window.location;
+
+    if(process.env.NODE_ENV === "development"){ // temp fix until more normal way to proxy web socket.
+        hostname = "localhost"
+        port = "8188"
+    }
+
+    const ws = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=123456789");
+
+    webseocket = ws
+    // Define event handlers for the WebSocket connection
+    ws.onopen = () => {
+        console.log('WebSocket connected');
+    };
+
+    ws.onclose = () => {
+        console.log('WebSocket disconnected');
+    };
+
+    return ws
+}
+
 export interface Root {
     CheckpointLoaderSimple: CheckpointLoaderSimple
 }
