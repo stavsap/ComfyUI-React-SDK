@@ -1,7 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {useComfy} from "../comfy/ComfyProvider";
 import logo from "../logo.svg";
-import {Box, Button, Image, Select, Stack, Text} from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Image,
+    Select,
+    Stack,
+    Text,
+    Input,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Checkbox, useToast
+} from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
 import {
     Slider,
@@ -13,15 +24,18 @@ import {
 import {Subscribe, UnSubscribe, WS_MESSAGE_TYPE_EXECUTED} from "../comfy/api";
 
 const Dashboard = () => {
+    const toast = useToast()
     const {queuePrompt, fetchCheckpoints } = useComfy();
     const [rand, setRand] = useState<number>(Math.random);
     const [image, setImage] = useState<string | null>(null);
 
     const [checkpoints, setCheckpoints] = useState<string[][]>([]);
-    const [selectedOption, setSelectedOption] = useState<string>("");
+    const [selectedCheckpoint, setSelectedCheckpoint] = useState<string>("");
 
     const [cfg, setCfg] = useState(5);
     const [steps, setSteps] = useState(25);
+    const [seed, setSeed] = useState(Math.round(Math.random()*Number.MAX_SAFE_INTEGER));
+    const [randomSeed, setRandomSeed] = useState(true);
 
     useEffect(() => {
         updateCheckpoint()
@@ -49,11 +63,22 @@ const Dashboard = () => {
         queuePrompt({
             cfg:cfg,
             steps:steps,
-            seed:Math.round(Math.random()*100000),
-            checkpoint: selectedOption
+            seed: seed,
+            checkpoint: selectedCheckpoint
         }).then(res=>{
             console.log(res)
+            toast({
+                title: 'Prompt Submitted',
+                description: res.prompt_id,
+                status: 'success',
+                duration: 2000,
+                isClosable: true,
+            })
         })
+        if (randomSeed){
+            console.log("setting new seed")
+            setSeed(prev => Math.round(Math.random()*Number.MAX_SAFE_INTEGER))
+        }
     }
 
     const handleCFGChange = (value: number) => {
@@ -65,7 +90,11 @@ const Dashboard = () => {
     };
 
     const handleSelectChange = (event: any) => {
-        setSelectedOption(event.target.value);
+        setSelectedCheckpoint(event.target.value);
+    };
+
+    const handleRandomSeedChange = (event:any) => {
+        setRandomSeed(event.target.checked);
     };
 
     return (
@@ -75,7 +104,7 @@ const Dashboard = () => {
                     <Box flex="1"  style={{paddingLeft:'20px', paddingRight:'20px'}}>
                         <Stack direction={"column"} spacing={6} style={{marginTop:'5vh'}}>
                             <Select placeholder='Select Checkpoint'
-                                    value={selectedOption}
+                                    value={selectedCheckpoint}
                                     onChange={handleSelectChange} >
                                 {checkpoints?.length>0 && checkpoints[0].map((option, index) =>
                                     <option key={index} value={option}>{option}</option>
@@ -107,6 +136,14 @@ const Dashboard = () => {
                                 </SliderTrack>
                                 <SliderThumb />
                             </Slider>
+                            <NumberInput value={seed} min={1} max={Number.MAX_SAFE_INTEGER} step={1}>
+                                <NumberInputField />
+                                <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                </NumberInputStepper>
+                            </NumberInput>
+                            <Checkbox isChecked={randomSeed} onChange={handleRandomSeedChange} >Random Seed</Checkbox>
                             <Button colorScheme='blue' onClick={generate} style={{width:'80%', marginTop:'40px'}}>Generate</Button>
                         </Stack>
 
