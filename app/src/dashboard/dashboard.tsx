@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {useComfy} from "../compfy-api/ComfyProvider";
 import logo from "../logo.svg";
 import {Box, Button, Image, Stack} from "@chakra-ui/react";
-import {Generate} from "../compfy-api/api";
 import { Spinner } from '@chakra-ui/react'
 
 
@@ -17,7 +16,7 @@ const WS_MESSAGE_TYPE_EXECUTION_CACHED="execution_cached"
 
 const Dashboard = () => {
 
-    const {  fetchCheckpoints } = useComfy();
+    const {queuePrompt, fetchCheckpoints } = useComfy();
 
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [rand, setRand] = useState<number>(Math.random);
@@ -30,7 +29,11 @@ const Dashboard = () => {
         })
     }
 
-
+    function generate(){
+        queuePrompt().then(res=>{
+            console.log(res)
+        })
+    }
 
     useEffect(() => {
         // Create a WebSocket connection when the component mounts
@@ -88,7 +91,7 @@ const Dashboard = () => {
                 </Box>
                 <Stack direction='row'>
                     <Button colorScheme='blue' onClick={updateCheckpoint}>Fetch Checkpoints</Button>
-                    <Button colorScheme='blue' onClick={Generate}>Generate</Button>
+                    <Button colorScheme='blue' onClick={generate}>Generate</Button>
                 </Stack>
 
             </header>
