@@ -7,7 +7,6 @@ export const WS_MESSAGE_TYPE_EXECUTION_START="execution_start"
 export const WS_MESSAGE_TYPE_EXECUTION_CACHED="execution_cached"
 
 let webseocket: WebSocket
-
 export function GetWebSocket(){
     if (webseocket) {
         return webseocket
@@ -19,19 +18,16 @@ export function GetWebSocket(){
         port = "8188"
     }
 
-    const ws = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=123456789");
-
-    webseocket = ws
+    webseocket = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=1122");
     // Define event handlers for the WebSocket connection
-    ws.onopen = () => {
+    webseocket.onopen = () => {
         console.log('WebSocket connected');
     };
 
-    ws.onclose = () => {
+    webseocket.onclose = () => {
         console.log('WebSocket disconnected');
     };
-
-    return ws
+    return webseocket
 }
 
 export interface Root {

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {useComfy} from "../compfy-api/ComfyProvider";
+import {useComfy} from "../comfy/ComfyProvider";
 import logo from "../logo.svg";
 import {Box, Button, Image, Stack} from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
-import {GetWebSocket, WS_MESSAGE_TYPE_EXECUTED} from "../compfy-api/api";
+import {GetWebSocket, WS_MESSAGE_TYPE_EXECUTED} from "../comfy/api";
 
 const Dashboard = () => {
 
@@ -25,14 +25,15 @@ const Dashboard = () => {
 
     useEffect(() => {
         // Create a WebSocket connection when the component mounts
-        const ws = GetWebSocket()
+        let ws = GetWebSocket()
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            if(message.type === WS_MESSAGE_TYPE_EXECUTED){
-                setImage(message.data.output.images[0].filename)
-            }
             console.log(message)
+            if(message.type === WS_MESSAGE_TYPE_EXECUTED){
+                setRand(prev=>Math.random())
+                setImage(prev => message.data.output.images[0].filename)
+            }
         };
 
     }, []);
