@@ -11,7 +11,7 @@ import {
     Input,
     NumberInput,
     NumberInputField,
-    NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Checkbox, useToast
+    NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Checkbox, useToast, AspectRatio
 } from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
 import {
@@ -154,16 +154,13 @@ const Dashboard = () => {
                          justifyContent="center"
                          h="100vh"
                          >
-                        <Box boxSize="80%" border="2px solid black" p="4" borderRadius="md">
-                            {image && (
-                                <Image
-                                    src={`/view?filename=${image}&type=output&rand=${rand}`}
-                                    alt=""
-                                    maxW="100%"
-                                    maxH="100%"
-                                />
-                            )}
-                        </Box>
+                            <AspectRatio minWidth='80%' maxW='80%' ratio={1} border="2px solid black" p="4" borderRadius="md">
+                                    <Image
+                                        src={`/view?filename=${image}&type=output&rand=${rand}`}
+                                        alt=""
+                                        objectFit='cover'
+                                    />
+                            </AspectRatio>
 
                     </Box>
                     <Box flex="1">
