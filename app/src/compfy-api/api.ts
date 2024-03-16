@@ -9,7 +9,7 @@ export interface Input {
 }
 
 export interface Required {
-    ckpt_name: string[][]
+    ckpt_name: string[]
 }
 
 export interface CheckpointLoaderSimple {
@@ -22,16 +22,6 @@ export interface CheckpointLoaderSimple {
     description: string
     category: string
     output_node: boolean
-}
-
-export   function  getCheckpoints(){
-    axios.get<Root>('object_info/CheckpointLoaderSimple', {
-        headers: {
-    'Content-Type': 'application/json'
-}
-    }).then(res=>{
-        console.log(res.data.CheckpointLoaderSimple.input.required.ckpt_name)
-    });
 }
 
 // #This is the ComfyUI api prompt format.
