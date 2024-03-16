@@ -49,6 +49,13 @@ export function GetWebSocket(){
     return webseocket
 }
 
+export interface DashboardGenParams {
+    cfg: number
+    steps: number
+    seed: number
+    checkpoint: string
+}
+
 export interface Root {
     CheckpointLoaderSimple: CheckpointLoaderSimple
 }
@@ -58,7 +65,7 @@ export interface Input {
 }
 
 export interface Required {
-    ckpt_name: string[]
+    ckpt_name: string[][]
 }
 
 export interface CheckpointLoaderSimple {

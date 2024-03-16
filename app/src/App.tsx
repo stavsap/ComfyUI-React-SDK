@@ -6,14 +6,14 @@ import {ComfyProvider} from "./comfy/ComfyProvider";
 import {GetWebSocket} from "./comfy/api";
 
 function App() {
-    GetWebSocket()
   return (
-      <ChakraProvider>
-        <ComfyProvider>
-          <Dashboard></Dashboard>
-        </ComfyProvider>
-      </ChakraProvider>
-
+      <>
+          <ChakraProvider>
+              <ComfyProvider>
+                  <Dashboard></Dashboard>
+              </ComfyProvider>
+          </ChakraProvider>
+      </>
   );
 }
 
