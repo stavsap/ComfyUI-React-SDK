@@ -6,7 +6,20 @@ export const WS_MESSAGE_TYPE_PROGRESS="progress"
 export const WS_MESSAGE_TYPE_EXECUTION_START="execution_start"
 export const WS_MESSAGE_TYPE_EXECUTION_CACHED="execution_cached"
 
+interface Callbacks {
+    [key: string]: (message: any) => void;
+}
+const subscribers: Callbacks = {}
+
 let webseocket: WebSocket
+
+export function Subscribe(key: string, callback:(message: any) => void){
+    subscribers[key] = callback
+}
+
+export function UnSubscribe(key: string){
+    delete subscribers[key];
+}
 export function GetWebSocket(){
     if (webseocket) {
         return webseocket
@@ -23,6 +36,12 @@ export function GetWebSocket(){
     webseocket.onopen = () => {
         console.log('WebSocket connected');
     };
+
+    webseocket.onmessage = (event) =>{
+        Object.entries(subscribers).forEach(([key, callback]) => {
+            callback(event); // Call the function
+        });
+    }
 
     webseocket.onclose = () => {
         console.log('WebSocket disconnected');

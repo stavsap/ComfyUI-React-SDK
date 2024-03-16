@@ -3,10 +3,9 @@ import {useComfy} from "../comfy/ComfyProvider";
 import logo from "../logo.svg";
 import {Box, Button, Image, Stack} from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
-import {GetWebSocket, WS_MESSAGE_TYPE_EXECUTED} from "../comfy/api";
+import {Subscribe, UnSubscribe, WS_MESSAGE_TYPE_EXECUTED} from "../comfy/api";
 
 const Dashboard = () => {
-
     const {queuePrompt, fetchCheckpoints } = useComfy();
     const [rand, setRand] = useState<number>(Math.random);
     const [image, setImage] = useState<string | null>(null);
@@ -24,18 +23,17 @@ const Dashboard = () => {
     }
 
     useEffect(() => {
-        // Create a WebSocket connection when the component mounts
-        let ws = GetWebSocket()
-
-        ws.onmessage = (event) => {
+        Subscribe('dashboard',(event) => {
             const message = JSON.parse(event.data);
             console.log(message)
             if(message.type === WS_MESSAGE_TYPE_EXECUTED){
                 setRand(prev=>Math.random())
                 setImage(prev => message.data.output.images[0].filename)
             }
-        };
-
+        })
+        return () => {
+            UnSubscribe('dashboard')
+        }
     }, []);
 
     return (
