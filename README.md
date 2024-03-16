@@ -10,4 +10,4 @@ Inspired by: https://github.com/cubiq/Comfy_Dungeon
 
 ## Getting started
 
-To view the demo of this repo, just clone it to custom_nodes, restart comfy and enter the browser at http://<your-comfy-url>/root.
+To view the demo of this repo, just clone it to custom_nodes, restart comfy and enter the browser at http://\<your-comfy-url>/root.
