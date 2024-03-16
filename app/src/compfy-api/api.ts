@@ -83,8 +83,8 @@ export function  Generate(){
                 "class_type": "EmptyLatentImage",
                 "inputs": {
                     "batch_size": 1,
-                    "height": 512,
-                    "width": 512
+                    "height": 1024,
+                    "width": 1024
                 }
             },
             "6": {

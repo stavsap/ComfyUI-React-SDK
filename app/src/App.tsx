@@ -1,6 +1,11 @@
 import React, { useState, useEffect }  from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {Box, ChakraProvider, Stack} from '@chakra-ui/react'
+import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Image } from '@chakra-ui/react'
+import { Spinner } from '@chakra-ui/react'
+
 import {Generate, getCheckpoints} from "./compfy-api/api";
 const WS_MESSAGE_TYPE_EXECUTING="executing"
 const WS_MESSAGE_TYPE_EXECUTED="executed"
@@ -20,8 +25,8 @@ function App() {
     let { hostname, port } = window.location;
 
     // the proxy not working yet. enable when working with local dev via 'npm start'
-    // hostname = "localhost"
-    // port = "8188"
+    hostname = "localhost"
+    port = "8188"
 
     const ws = new WebSocket("ws://"+hostname+":"+port+"/ws?clientId=1122");
 
@@ -54,18 +59,30 @@ function App() {
 
 
   return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo"/>
-          <button onClick={getCheckpoints}>Fetch Checkpoints</button>
-          <button onClick={Generate}>Run Workflow</button>
-          {image != null && <a href={`/view?filename=${image}&type=output&rand=${rand}`} data-type="image">
-            <img src={`/view?filename=${image}&type=output&rand=${rand}`} alt=""/></a>}
+      <ChakraProvider>
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo"/>
+            <Box boxSize='sm'>
+              {/*<Spinner*/}
+              {/*    thickness='4px'*/}
+              {/*    speed='0.65s'*/}
+              {/*    emptyColor='gray.200'*/}
+              {/*    color='blue.500'*/}
+              {/*    size='xl'*/}
+              {/*/>*/}
+              {image &&
+                <Image src={`/view?filename=${image}&type=output&rand=${rand}`} alt='' />
+              }
+            </Box>
+            <Stack direction='row'>
+              <Button colorScheme='blue' onClick={getCheckpoints}>Fetch Checkpoints</Button>
+              <Button colorScheme='blue' onClick={Generate}>Generate</Button>
+            </Stack>
 
-        </header>
-
-
-      </div>
+          </header>
+        </div>
+      </ChakraProvider>
   );
 }
 
