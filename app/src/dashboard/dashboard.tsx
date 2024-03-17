@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useComfy} from "../comfy/ComfyProvider";
-import logo from "../logo.svg";
 import {
     Box,
     Button,
@@ -11,7 +10,7 @@ import {
     Input,
     NumberInput,
     NumberInputField,
-    NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Checkbox, useToast, AspectRatio
+    NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Checkbox, useToast, AspectRatio, ColorModeScript
 } from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
 import {
@@ -22,6 +21,9 @@ import {
     SliderMark,
 } from '@chakra-ui/react'
 import {Subscribe, UnSubscribe, WS_MESSAGE_TYPE_EXECUTED} from "../comfy/api";
+import {base} from "./image";
+import theme from "../theme";
+import ToggleColorMode from "./ToggleColorMode";
 
 const Dashboard = () => {
     const toast = useToast()
@@ -60,6 +62,15 @@ const Dashboard = () => {
     }
 
     function generate(){
+        if (selectedCheckpoint === ""){
+            toast({
+                title: 'Prompt Submitted',
+                description: "No Checkpoint is selected",
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
         queuePrompt({
             cfg:cfg,
             steps:steps,
@@ -67,16 +78,26 @@ const Dashboard = () => {
             checkpoint: selectedCheckpoint
         }).then(res=>{
             console.log(res)
-            toast({
-                title: 'Prompt Submitted',
-                description: res.prompt_id,
-                status: 'success',
-                duration: 2000,
-                isClosable: true,
-            })
+            if (res.prompt_id){
+                // const examplePromise = new Promise((resolve, reject) => {
+                //     setTimeout(() => resolve(200), 5000)
+                // })
+                // toast.promise(examplePromise, {
+                //     success: { title: 'Complete', description: 'Looks great' },
+                //     error: { title: 'Error', description: 'Something wrong' },
+                //     loading: { title: 'Generating pending', description: 'Please wait' },
+                // })
+                toast({
+                    title: 'Prompt Submitted',
+                    description: res.prompt_id,
+                    status: 'success',
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
+
         })
         if (randomSeed){
-            console.log("setting new seed")
             setSeed(prev => Math.round(Math.random()*Number.MAX_SAFE_INTEGER))
         }
     }
@@ -99,10 +120,10 @@ const Dashboard = () => {
 
     return (
         <div >
-
                 <Stack direction="row" spacing={2} style={{ width: '100%' }}>
                     <Box flex="1"  style={{paddingLeft:'20px', paddingRight:'20px'}}>
                         <Stack direction={"column"} spacing={6} style={{marginTop:'5vh'}}>
+                            <ToggleColorMode />
                             <Select placeholder='Select Checkpoint'
                                     value={selectedCheckpoint}
                                     onChange={handleSelectChange} >
@@ -153,14 +174,21 @@ const Dashboard = () => {
                          alignItems="center"
                          justifyContent="center"
                          h="100vh"
-                         >
-                            <AspectRatio minWidth='80%' maxW='80%' ratio={1} border="2px solid black" p="4" borderRadius="md">
-                                    <Image
-                                        src={`/view?filename=${image}&type=output&rand=${rand}`}
-                                        alt=""
-                                        objectFit='cover'
-                                    />
-                            </AspectRatio>
+                    >
+                        <AspectRatio minWidth='80%' maxW='80%' ratio={1} border="2px solid black" p="4"
+                                     borderRadius="md">
+                            <>
+                                {image && (<Image
+                                    src={`/view?filename=${image}&type=output&rand=${rand}`}
+                                    alt=""
+                                    objectFit='cover'
+                                />)}
+                                {!image && (<img src={base} alt="Red dot"/>)}
+                            </>
+
+
+                        </AspectRatio>
+
 
                     </Box>
                     <Box flex="1">
