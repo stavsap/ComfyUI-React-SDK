@@ -36,6 +36,8 @@ export const ComfyProvider: React.FC<DataProviderProps> = ({ children }) => {
         WORKFLOW["4"].inputs.ckpt_name =  params.checkpoint
         WORKFLOW["5"].inputs.height =  params.height
         WORKFLOW["5"].inputs.width =  params.width
+        WORKFLOW["6"].inputs.text =  params.positivePrompt
+        WORKFLOW["7"].inputs.text =  params.negativePrompt
         const data = { 'prompt': WORKFLOW, 'client_id': "1122"};
 
         const response = await fetch('/prompt', {

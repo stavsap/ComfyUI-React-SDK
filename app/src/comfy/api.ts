@@ -56,6 +56,8 @@ export interface DashboardGenParams {
     checkpoint: string
     height: number
     width: number
+    positivePrompt: string
+    negativePrompt: string
 }
 
 export interface Root {

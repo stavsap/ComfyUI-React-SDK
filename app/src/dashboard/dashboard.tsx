@@ -10,7 +10,14 @@ import {
     Input,
     NumberInput,
     NumberInputField,
-    NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Checkbox, useToast, AspectRatio, ColorModeScript
+    NumberInputStepper,
+    NumberIncrementStepper,
+    NumberDecrementStepper,
+    Checkbox,
+    useToast,
+    AspectRatio,
+    ColorModeScript,
+    Textarea
 } from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
 import {
@@ -41,6 +48,8 @@ const Dashboard = () => {
 
     const [height, setHeight] = useState(512);
     const [width, setWidth] = useState(512);
+    const [positivePrompt, setPositivePrompt] = useState("");
+    const [negetivePrompt, setNegetivePrompt] = useState("");
 
 
     useEffect(() => {
@@ -81,7 +90,9 @@ const Dashboard = () => {
             seed: seed,
             checkpoint: selectedCheckpoint,
             height:height,
-            width:width
+            width:width,
+            positivePrompt:positivePrompt,
+            negativePrompt:negetivePrompt
         }).then(res=>{
             console.log(res)
             if (res.prompt_id){
@@ -132,6 +143,13 @@ const Dashboard = () => {
         setWidth(value);
     };
 
+    const handlePositivePromptChange = (event:any) => {
+        setPositivePrompt(event.target.value);
+    };
+    const handleNegetivePromptChange = (event:any) => {
+        setNegetivePrompt(event.target.value);
+    };
+
 
     return (
         <div >
@@ -179,14 +197,16 @@ const Dashboard = () => {
                                 <Checkbox isChecked={randomSeed} onChange={handleRandomSeedChange} >Random Seed</Checkbox>
                             </Stack>
                             <Stack direction="row" spacing={5}>
-                                <NumberInput value={height} onChange={handleHeightChange}>
+                                <NumberInput value={height} onChange={handleHeightChange} style={{maxWidth:'100px', textAlign:'center'}}>
                                     <NumberInputField />
                                 </NumberInput>
                                 <div style={{paddingTop:'5px'}}>X</div>
-                                <NumberInput value={width} onChange={handleWidthChange}>
+                                <NumberInput value={width} onChange={handleWidthChange} style={{maxWidth:'100px', textAlign:'center'}}>
                                     <NumberInputField />
                                 </NumberInput>
                             </Stack>
+                            <Textarea placeholder='Positive Prompt' onChange={handlePositivePromptChange}/>
+                            <Textarea placeholder='Negative Prompt' onChange={handleNegetivePromptChange}/>
 
                             <Button colorScheme='blue' onClick={generate} >Generate</Button>
                         </Stack>
@@ -198,6 +218,7 @@ const Dashboard = () => {
                          justifyContent="center"
                          h="100vh"
                     >
+
                         <AspectRatio minWidth='80%' maxW='80%' ratio={1} border="2px solid black" p="4"
                                      borderRadius="md">
                             <>
@@ -205,12 +226,14 @@ const Dashboard = () => {
                                     src={`/view?filename=${image}&type=output&rand=${rand}`}
                                     alt=""
                                     objectFit='cover'
+                                    style={{width:'100%', height:'100%', objectFit:'contain'}}
                                 />)}
                                 {!image && (<img src={base} alt="Red dot"/>)}
                             </>
 
+                            </AspectRatio>
 
-                        </AspectRatio>
+
 
 
                     </Box>
