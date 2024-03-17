@@ -39,6 +39,10 @@ const Dashboard = () => {
     const [seed, setSeed] = useState(Math.round(Math.random()*Number.MAX_SAFE_INTEGER));
     const [randomSeed, setRandomSeed] = useState(true);
 
+    const [height, setHeight] = useState(512);
+    const [width, setWidth] = useState(512);
+
+
     useEffect(() => {
         updateCheckpoint()
         Subscribe('dashboard',(event) => {
@@ -75,7 +79,9 @@ const Dashboard = () => {
             cfg:cfg,
             steps:steps,
             seed: seed,
-            checkpoint: selectedCheckpoint
+            checkpoint: selectedCheckpoint,
+            height:height,
+            width:width
         }).then(res=>{
             console.log(res)
             if (res.prompt_id){
@@ -118,6 +124,15 @@ const Dashboard = () => {
         setRandomSeed(event.target.checked);
     };
 
+    const handleHeightChange = (sValue:string, value:number) => {
+        setHeight(value);
+    };
+
+    const handleWidthChange = (sValue:string, value:number) => {
+        setWidth(value);
+    };
+
+
     return (
         <div >
                 <Stack direction="row" spacing={2} style={{ width: '100%' }}>
@@ -157,15 +172,23 @@ const Dashboard = () => {
                                 </SliderTrack>
                                 <SliderThumb />
                             </Slider>
-                            <NumberInput value={seed} min={1} max={Number.MAX_SAFE_INTEGER} step={1}>
-                                <NumberInputField />
-                                <NumberInputStepper>
-                                    <NumberIncrementStepper />
-                                    <NumberDecrementStepper />
-                                </NumberInputStepper>
-                            </NumberInput>
-                            <Checkbox isChecked={randomSeed} onChange={handleRandomSeedChange} >Random Seed</Checkbox>
-                            <Button colorScheme='blue' onClick={generate} style={{width:'80%', marginTop:'40px'}}>Generate</Button>
+                            <Stack direction="row" spacing={5}>
+                                <NumberInput value={seed} min={1} max={Number.MAX_SAFE_INTEGER} step={1}>
+                                    <NumberInputField />
+                                </NumberInput>
+                                <Checkbox isChecked={randomSeed} onChange={handleRandomSeedChange} >Random Seed</Checkbox>
+                            </Stack>
+                            <Stack direction="row" spacing={5}>
+                                <NumberInput value={height} onChange={handleHeightChange}>
+                                    <NumberInputField />
+                                </NumberInput>
+                                <div style={{paddingTop:'5px'}}>X</div>
+                                <NumberInput value={width} onChange={handleWidthChange}>
+                                    <NumberInputField />
+                                </NumberInput>
+                            </Stack>
+
+                            <Button colorScheme='blue' onClick={generate} >Generate</Button>
                         </Stack>
 
                     </Box>

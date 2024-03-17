@@ -54,6 +54,8 @@ export interface DashboardGenParams {
     steps: number
     seed: number
     checkpoint: string
+    height: number
+    width: number
 }
 
 export interface Root {
