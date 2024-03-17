@@ -17,7 +17,7 @@ import {
     useToast,
     AspectRatio,
     ColorModeScript,
-    Textarea
+    Textarea, Progress
 } from "@chakra-ui/react";
 import { Spinner } from '@chakra-ui/react'
 import {
@@ -27,7 +27,7 @@ import {
     SliderThumb,
     SliderMark,
 } from '@chakra-ui/react'
-import {Subscribe, UnSubscribe, WS_MESSAGE_TYPE_EXECUTED} from "../comfy/api";
+import {Subscribe, UnSubscribe, WS_MESSAGE_TYPE_EXECUTED, WS_MESSAGE_TYPE_PROGRESS} from "../comfy/api";
 import {base} from "./image";
 import theme from "../theme";
 import ToggleColorMode from "./ToggleColorMode";
@@ -51,6 +51,9 @@ const Dashboard = () => {
     const [positivePrompt, setPositivePrompt] = useState("");
     const [negetivePrompt, setNegetivePrompt] = useState("");
 
+    const [inProgress, setInProgress] = useState(false);
+    const [progress, setProgress] = useState(0);
+
 
     useEffect(() => {
         updateCheckpoint()
@@ -60,6 +63,10 @@ const Dashboard = () => {
             if(message.type === WS_MESSAGE_TYPE_EXECUTED){
                 setRand(prev=>Math.random())
                 setImage(prev => message.data.output.images[0].filename)
+                setInProgress(prev =>false)
+                setProgress(prev =>0)
+            }else if(message.type === WS_MESSAGE_TYPE_PROGRESS){
+               setProgress(Math.floor((message.data.value / message.data.max) * 100) )
             }
         })
         return () => {
@@ -111,6 +118,7 @@ const Dashboard = () => {
                     duration: 2000,
                     isClosable: true,
                 })
+                setInProgress(true)
             }
 
         })
@@ -209,6 +217,10 @@ const Dashboard = () => {
                             <Textarea placeholder='Negative Prompt' onChange={handleNegetivePromptChange}/>
 
                             <Button colorScheme='blue' onClick={generate} >Generate</Button>
+
+                            {inProgress && ( <Progress hasStripe value={progress} />)}
+
+
                         </Stack>
 
                     </Box>
